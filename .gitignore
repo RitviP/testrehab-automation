@@ -1,0 +1,6 @@
+test-output/
+target/
+*.log
+*.tmp
+*.class
+*.png

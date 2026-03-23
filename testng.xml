@@ -1,0 +1,9 @@
+
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="PlanetRehab Suite">
+  <test thread-count="5" name="All Tests">
+    <classes>
+      <class name="com.planetrehab.automation.tests.RegisterPatientTest"/>
+    </classes>
+  </test> <!-- Test -->
+</suite> <!-- Suite -->
