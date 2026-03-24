@@ -24,3 +24,17 @@ jobs:
 
     - name: Run Tests
       run: mvn clean test
+
+    # ✅ Upload TestNG / Extent Reports
+    - name: Upload Test Reports
+      uses: actions/upload-artifact@v4
+      with:
+        name: test-report
+        path: test-output/
+
+    # ✅ Upload Screenshots (if any failures)
+    - name: Upload Screenshots
+      uses: actions/upload-artifact@v4
+      with:
+        name: screenshots
+        path: test-output/screenshots/
