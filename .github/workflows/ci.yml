@@ -22,8 +22,8 @@ jobs:
     - name: Setup Chrome
       uses: browser-actions/setup-chrome@v1
 
-    - name: Run Tests
-      run: mvn clean test
+   - name: Run Tests
+     run: mvn clean test -Dheadless=true
 
     # ✅ Upload TestNG / Extent Reports
     - name: Upload Test Reports

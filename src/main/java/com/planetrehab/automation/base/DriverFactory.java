@@ -24,16 +24,20 @@ public class DriverFactory {
 
 		    WebDriverManager.chromedriver().setup();
 
-		    ChromeOptions chromeOptions = new ChromeOptions();
-
-		    chromeOptions.addArguments("--start-maximized");
+		   
 
 		    // 🔥 CI STABILITY FIX
-		    chromeOptions.addArguments("--headless=new");
-		    chromeOptions.addArguments("--no-sandbox");
-		    chromeOptions.addArguments("--disable-dev-shm-usage");
-		    chromeOptions.addArguments("--window-size=1920,1080");
+		    ChromeOptions chromeOptions = new ChromeOptions();
 
+		    if (Boolean.parseBoolean(System.getProperty("headless", "false"))) {
+		        chromeOptions.addArguments("--headless=new");
+		        chromeOptions.addArguments("--no-sandbox");
+		        chromeOptions.addArguments("--disable-dev-shm-usage");
+		        chromeOptions.addArguments("--window-size=1920,1080");
+		        chromeOptions.addArguments("--remote-allow-origins=*");
+		    } else {
+		        chromeOptions.addArguments("--start-maximized");
+		    }
 		    driver.set(new ChromeDriver(chromeOptions));
 		    break;
 
