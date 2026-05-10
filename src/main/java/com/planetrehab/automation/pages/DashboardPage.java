@@ -128,11 +128,8 @@ public class DashboardPage {
 
         driver.switchTo().defaultContent();
 
-        // 🔥 Safe frame switch
-        WebDriverUtils.waitForFrameAndSwitch(
-                "fin",
-                FrameworkConstants.EXPLICIT_WAIT_TIME
-        );
+        // 🔥 Correct frame for dashboard
+        WebDriverUtils.switchToFinFrame();
 
         WebDriverUtils.click(addNewPatientBtn);
 

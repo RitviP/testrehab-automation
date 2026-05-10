@@ -9,38 +9,31 @@ import com.planetrehab.automation.pages.RegisterPatientPage;
 
 public class RegisterPatientTest extends BaseTest {
 
-    @Test(
-        dataProvider = "registerPatientData",
-        dataProviderClass = com.planetrehab.automation.dataproviders.RegisterPatientDataProvider.class
-    )
-    public void verifyPatientRegistration(String firstName,
-                                          String lastName,
-                                          String dob,
-                                          String gender,
-                                          String portalAccess) {
+	@Test(dataProvider = "registerPatientData", dataProviderClass = com.planetrehab.automation.dataproviders.RegisterPatientDataProvider.class)
+	public void verifyPatientRegistration(String firstName, String lastName, String dob, String gender,
+			String portalAccess) {
 
-        // 🔥 Login
-        doLogin();
+		// 🔥 Login
+		doLogin();
 
-        // 🔥 Navigate
-        DashboardPage dashboardPage = new DashboardPage(driver);
-        RegisterPatientPage registerPage = dashboardPage.clickAddNewPatient();
+		// 🔥 Navigate
+		DashboardPage dashboardPage = new DashboardPage(driver);
+		RegisterPatientPage registerPage = dashboardPage.clickAddNewPatient();
 
-        // 🔥 Fill form
-        registerPage.enterFirstName(firstName);
-        registerPage.enterLastName(lastName);
-        registerPage.enterDOB(dob);
-        registerPage.selectGender(gender);
-        registerPage.selectPatientPortalAccess(portalAccess);
-        
+		// 🔥 Fill form
+		registerPage.enterFirstName(firstName);
+		registerPage.enterLastName(lastName);
+		registerPage.enterDOB(dob);
+		registerPage.selectGender(gender);
+		registerPage.selectPatientPortalAccess(portalAccess);
 
-        // 🔥 Submit
-        registerPage.clickCreatePatient();
-        registerPage.confirmCreatePatient();
+		// 🔥 Submit
+		registerPage.clickCreatePatient();
+		registerPage.confirmCreatePatient();
 
-        // 🔥 VALIDATION
-        boolean isCreated = registerPage.verifyPatientCreated(firstName, lastName);
+		// 🔥 VALIDATION
+		boolean isCreated = registerPage.verifyPatientCreated(firstName, lastName);
 
-        Assert.assertTrue(isCreated, "❌ Patient registration failed");
-    }
+		Assert.assertTrue(isCreated, "❌ Patient registration failed");
+	}
 }

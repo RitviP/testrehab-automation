@@ -22,29 +22,20 @@ public class DriverFactory {
 
 		case "chrome":
 
-			WebDriverManager.chromedriver().setup();
+		    WebDriverManager.chromedriver().setup();
 
-			ChromeOptions chromeOptions = new ChromeOptions();
-			chromeOptions.addArguments("--start-maximized");
+		    ChromeOptions chromeOptions = new ChromeOptions();
 
-			// 🔥 Optional (CI / headless support)
-			if (Boolean.parseBoolean(System.getProperty("headless", "false"))) {
-				chromeOptions.addArguments("--headless=new");
-				chromeOptions.addArguments("--window-size=1920,1080");
-			}
+		    chromeOptions.addArguments("--start-maximized");
 
-			driver.set(new ChromeDriver(chromeOptions));
-			break;
+		    // 🔥 CI STABILITY FIX
+		    chromeOptions.addArguments("--headless=new");
+		    chromeOptions.addArguments("--no-sandbox");
+		    chromeOptions.addArguments("--disable-dev-shm-usage");
+		    chromeOptions.addArguments("--window-size=1920,1080");
 
-		case "edge":
-
-			WebDriverManager.edgedriver().setup();
-
-			EdgeOptions edgeOptions = new EdgeOptions();
-			edgeOptions.addArguments("--start-maximized");
-
-			driver.set(new EdgeDriver(edgeOptions));
-			break;
+		    driver.set(new ChromeDriver(chromeOptions));
+		    break;
 
 		default:
 			throw new RuntimeException("❌ Browser not supported: " + browser);

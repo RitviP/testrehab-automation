@@ -100,13 +100,13 @@ public class RegisterPatientPage {
     }
 
     // 🔥 Full Flow (optional helper)
-    public void registerPatient(String firstName, String lastName, String dob, String gender, String PatientPortalAccess) {
+    public void registerPatient(String firstName, String lastName, String dob, String gender, String PatientPortalAccess)  {
         enterFirstName(firstName);
         enterLastName(lastName);
         enterDOB(dob);
         selectGender(gender);
         selectPatientPortalAccess(PatientPortalAccess);
-        clickCreatePatient();
+        clickCreatePatient();;
         confirmCreatePatient();
     }
  // ===================== VALIDATION =====================

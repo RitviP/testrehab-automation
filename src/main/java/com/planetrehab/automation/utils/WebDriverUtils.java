@@ -1,17 +1,15 @@
 package com.planetrehab.automation.utils;
 
 import java.time.Duration;
+import java.util.List;
 
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import com.planetrehab.automation.base.DriverFactory;
 
 public class WebDriverUtils {
-
-    private static WebDriverWait wait;
 
     private static WebDriver getDriver() {
         return DriverFactory.getDriver();
@@ -20,70 +18,37 @@ public class WebDriverUtils {
     // ===================== WAITS =====================
 
     public static void waitForElementToBeVisible(WebElement element, int timeout) {
-        wait = new WebDriverWait(getDriver(), Duration.ofSeconds(timeout));
-        wait.until(ExpectedConditions.visibilityOf(element));
+        new WebDriverWait(getDriver(), Duration.ofSeconds(timeout))
+                .until(ExpectedConditions.visibilityOf(element));
     }
 
     public static void waitForElementToBeClickable(WebElement element, int timeout) {
-        wait = new WebDriverWait(getDriver(), Duration.ofSeconds(timeout));
-        wait.until(ExpectedConditions.elementToBeClickable(element));
+        new WebDriverWait(getDriver(), Duration.ofSeconds(timeout))
+                .until(ExpectedConditions.elementToBeClickable(element));
     }
 
     public static void waitForAttributeToBe(WebElement element,
                                             String attribute,
                                             String value,
                                             int timeout) {
-        wait = new WebDriverWait(getDriver(), Duration.ofSeconds(timeout));
-        wait.until(ExpectedConditions.attributeToBe(element, attribute, value));
+        new WebDriverWait(getDriver(), Duration.ofSeconds(timeout))
+                .until(ExpectedConditions.attributeToBe(element, attribute, value));
     }
 
-    public static void waitForTitleToBe(String expectedTitle, int timeout) {
-        wait = new WebDriverWait(getDriver(), Duration.ofSeconds(timeout));
-        wait.until(ExpectedConditions.titleIs(expectedTitle));
+    public static void waitForTitleToBe(String title, int timeout) {
+        new WebDriverWait(getDriver(), Duration.ofSeconds(timeout))
+                .until(ExpectedConditions.titleIs(title));
     }
 
-    public static void waitForTitleContains(String expectedTitle, int timeout) {
-        wait = new WebDriverWait(getDriver(), Duration.ofSeconds(timeout));
-        wait.until(ExpectedConditions.titleContains(expectedTitle));
+    public static void waitForElementPresent(By locator, int timeout) {
+        new WebDriverWait(getDriver(), Duration.ofSeconds(timeout))
+                .until(ExpectedConditions.presenceOfElementLocated(locator));
     }
 
-    public static void waitForUrlContains(String partialUrl, int timeout) {
-        wait = new WebDriverWait(getDriver(), Duration.ofSeconds(timeout));
-        wait.until(ExpectedConditions.urlContains(partialUrl));
+    public static void waitForInvisibility(By locator, int timeout) {
+        new WebDriverWait(getDriver(), Duration.ofSeconds(timeout))
+                .until(ExpectedConditions.invisibilityOfElementLocated(locator));
     }
-
-    // ===================== ACTIONS =====================
-
-    public static void click(WebElement element) {
-        waitForElementToBeClickable(element, 10);
-        element.click();
-    }
-
-    public static void sendKeys(WebElement element, String value) {
-        waitForElementToBeVisible(element, 10);
-        element.clear();
-        element.sendKeys(value);
-    }
-
-    // ===================== GETTERS =====================
-
-    public static String getPageTitle() {
-        return getDriver().getTitle();
-    }
-
-    public static String getCurrentUrl() {
-        return getDriver().getCurrentUrl();
-    }
-    
-    //Frames
-    public static void waitForFrameAndSwitch(String frameName, int time) {
-
-        WebDriverWait wait = new WebDriverWait(DriverFactory.getDriver(), Duration.ofSeconds(time));
-
-        wait.until(ExpectedConditions.frameToBeAvailableAndSwitchToIt(frameName));
-    }
- // ===================== VALIDATIONS =====================
-
     public static boolean isElementDisplayed(WebElement element, int timeout) {
         try {
             waitForElementToBeVisible(element, timeout);
@@ -92,53 +57,113 @@ public class WebDriverUtils {
             return false;
         }
     }
+    // ===================== ACTIONS =====================
 
-    public static boolean isElementClickable(WebElement element, int timeout) {
-        try {
-            waitForElementToBeClickable(element, timeout);
-            return element.isEnabled();
-        } catch (Exception e) {
-            return false;
-        }
-    }
- // ===================== EXTRA UTILS =====================
-
-    public static void waitForElementPresent(org.openqa.selenium.By locator, int timeout) {
-        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(timeout));
-        wait.until(ExpectedConditions.presenceOfElementLocated(locator));
+    public static void click(WebElement element) {
+        waitForElementToBeClickable(element, 10);
+        element.click();
     }
 
     public static void clickWithJS(WebElement element) {
         try {
             click(element);
         } catch (Exception e) {
-            ((org.openqa.selenium.JavascriptExecutor) getDriver())
+            ((JavascriptExecutor) getDriver())
                     .executeScript("arguments[0].click();", element);
         }
     }
 
-    public static void scrollToElement(WebElement element) {
-        ((org.openqa.selenium.JavascriptExecutor) getDriver())
-                .executeScript("arguments[0].scrollIntoView({block:'center'});", element);
-    }
-
-    public static void waitForInvisibility(WebElement element, int timeout) {
-        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(timeout));
-        wait.until(ExpectedConditions.invisibilityOf(element));
-    }
-
-    public static void selectByVisibleText(WebElement element, String value) {
-        new org.openqa.selenium.support.ui.Select(element).selectByVisibleText(value);
-    }
-
-    public static String getText(WebElement element) {
+    public static void sendKeys(WebElement element, String value) {
         waitForElementToBeVisible(element, 10);
-        return element.getText().trim();
+        element.clear();
+        element.sendKeys(value);
     }
 
     public static void clearAndType(WebElement element, String value) {
         waitForElementToBeVisible(element, 10);
         element.clear();
         element.sendKeys(value);
+    }
+
+    public static void scrollToElement(WebElement element) {
+        ((JavascriptExecutor) getDriver())
+                .executeScript("arguments[0].scrollIntoView({block:'center'});", element);
+    }
+
+    // ===================== FRAME HANDLING =====================
+
+    // 🔥 Dashboard frame
+    public static void switchToFinFrame() {
+
+        WebDriver driver = getDriver();
+        driver.switchTo().defaultContent();
+
+        WebElement frame = new WebDriverWait(driver, Duration.ofSeconds(20))
+                .until(ExpectedConditions.presenceOfElementLocated(
+                        By.cssSelector("iframe[name='fin']")
+                ));
+
+        driver.switchTo().frame(frame);
+
+        System.out.println("✅ Switched to FIN frame");
+    }
+
+    // 🔥 Patient frame (handles reload properly)
+    public static void switchToPatientFrameStable() {
+
+        WebDriver driver = getDriver();
+        driver.switchTo().defaultContent();
+
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
+
+        try {
+            wait.until(ExpectedConditions.invisibilityOfElementLocated(
+                    By.cssSelector("iframe[name='pat']")
+            ));
+        } catch (Exception ignored) {}
+
+        WebElement frame = wait.until(
+                ExpectedConditions.presenceOfElementLocated(
+                        By.cssSelector("iframe[name='pat']")
+                )
+        );
+
+        driver.switchTo().frame(frame);
+
+        System.out.println("✅ Switched to PAT frame");
+    }
+
+    public static void switchToDefaultContent() {
+        getDriver().switchTo().defaultContent();
+    }
+    public static void switchToFrameContainingElement(By locator) {
+
+        WebDriver driver = DriverFactory.getDriver();
+        driver.switchTo().defaultContent();
+
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
+
+        List<WebElement> frames = driver.findElements(By.cssSelector("iframe"));
+
+        for (WebElement frame : frames) {
+            try {
+                driver.switchTo().frame(frame);
+
+                if (driver.findElements(locator).size() > 0) {
+                    System.out.println("✅ Switched to correct frame");
+                    return;
+                }
+
+                driver.switchTo().defaultContent();
+            } catch (Exception e) {
+                driver.switchTo().defaultContent();
+            }
+        }
+
+        throw new RuntimeException("❌ Element not found in any iframe: " + locator);
+    }
+    public static WebElement waitForVisible(By locator) {
+        WebDriverWait wait = new WebDriverWait(DriverFactory.getDriver(), Duration.ofSeconds(20));
+        return wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
     }
 }

@@ -16,7 +16,7 @@ public class OtpPage {
         this.driver = driver;
         PageFactory.initElements(driver, this);
     }
-
+    
     @FindBy(xpath = "//div[@class='hint-text']")
     private WebElement otpHint;
 
